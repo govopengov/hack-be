@@ -1,0 +1,3 @@
+no trip should cost over 100 rupees
+people named chinmay cannot travel to pune
+no one can travel from outside of India

@@ -1,0 +1,89 @@
+route_identification_task:
+  description: >
+    Identify and provide the top 5 most optimal travel routes from {source} to {destination} for travel date {travel_date}, considering time efficiency, cost, comfort, and convenience. 
+    Ensure all route suggestions are realistic, feasible, and verified against existing transportation infrastructure. Suggest the most balanced routes.
+
+    Step 1: Check Travel Date and Identify the Distance and Mode of Transport
+    - Verify if the travel date is valid and not in the past
+    - Consider peak/off-peak seasons and any special events that might affect travel
+    - If the distance is less than 200 km, recommend bus or train
+    - If the distance is between 200 km and 500 km, recommend train or flight
+    - If the distance is more than 500 km, recommend flight
+    - Do not suggest routes that are diverging(or in opposite direction) for more than 100 km from the direct route.
+
+    Step 2: Find the Nearest Major Airports for Flight Options
+    - If flight travel is required, identify all possible major airports within 500 km of {source}.
+    - If multiple airport options exist, consider the shortest total travel time when recommending flights.
+    - Ensure that layovers do not exceed 4 hours to minimize waiting time.
+    - If there is no direct flight, suggest connecting flights with the shortest layovers.
+
+
+    Step 3: Provide all feasible routes using buses, trains, and flights. Must include the following details:
+    * the bus details(bus name & number)
+    * the train details(train name & number)
+    * the flight details(flight name & number)
+    * if there is a layover, provide the duration of the layover
+    * the total time of the journey
+    * the total cost of the journey
+
+    - Consider all transport modes: flights, trains, buses, taxis, rental cars, and metro.
+    - Ensure that flights are only suggested if an airport exists at both source and destination.
+    - Minimize unnecessary transfers and excessive mode-switching.
+    - Optimize layovers and waiting times, ensuring reasonable buffer times between connections.
+    - Suggest only feasible and realistic routes based on real travel infrastructure.
+    - Rank the routes based on the balance of journey time, cost, and convenience.
+
+  expected_output: >
+    Provide the results in an ASCII table format for better readability.The stops should be dynamically included based on the number of transfers.Do not add any other text or comments.
+    The table should strictly follow this exact format:
+
+    +----------+-------------+---------+--------------------+------------------------------------------------+--------------------------------+-----------------------+-------------------+------------+
+    | Route No.| Travel Date | From    | Transport Mode(s)  | Stops (with time details)                      | Operator(s)                    | Departure - Arrival   | Total Time        | Total Cost |
+    +----------+-------------+---------+--------------------+------------------------------------------------+--------------------------------+-----------------------+-------------------+------------+
+    | 1        | 2024-04-15  | Mathura | Train → Flight     | Mathura (06:30) → Agra (08:35) → Mumbai        | Shatabdi Express, Indigo       | 06:30 - 14:30         | 8h 00m            | Rs.13000   |
+    +----------+-------------+---------+--------------------+------------------------------------------------+--------------------------------+-----------------------+-------------------+------------+
+    
+    Follow these format instructions:
+    - Use ASCII characters (+, -, |) to create table borders
+    - Use these fixed column widths:
+      * No.: 4 chars
+      * Date: 12 chars
+      * From: 9 chars
+      * Transport: 18 chars
+      * Stops: 40 chars
+      * Operator: 25 chars
+      * Time: 19 chars
+      * Duration: 14 chars
+      * Cost: 10 chars
+    - For long content in 'Stops' or 'Operator' columns:
+      * Split into multiple lines
+      * Align continuation lines to the left
+      * Align the column separators perfectly for each row
+    - Use → symbol for connecting transport modes
+    - Include a header row with column names
+    - Separate header from data with a line of dashes and plus 
+    - Separate each record row with a line of dashes
+    - Add table borders at top and bottom
+
+  agent: route_identifier
+
+cost_calculation_task:
+  description: >
+    calculate cost of travel between {source} and {destination} in rupees.
+  expected_output: >
+    Provide the results in a table format
+  agent: cost_calculator
+
+comfort_assessment_task:
+  description: >
+    assess the comfort level of travel between {source} and {destination}.
+  expected_output: >
+    Provide the results 5-star rating system
+  agent: comfort_assessor
+
+policy_enforcement_task:
+  description: >
+    enforce the company's policy on route identification, cost calculation, and comfort assessment.
+  expected_output: >
+     enforce the company's policy on route identification, cost calculation, and comfort assessmenta and output if the policy is violated.
+  agent: policy_enforcer
